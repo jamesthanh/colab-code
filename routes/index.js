@@ -1,6 +1,10 @@
 var express = require('express');
 var router = express.Router();
 
+var nodemailer = require('nodemailer');
+var config = require('../config');
+var transporter = nodemailer.createTransport(config.mailer);
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Colab Code - Realtime Pair Coding' });
@@ -30,8 +34,20 @@ router.route('/contact')
         errorMessages: errors
       });
     } else {
-      res.render('thank', { title: 'Code4Share - a platform for sharing code.'});
-    }
+      var mailOptions = {
+        from: 'jamesnguyen1stth@gmail.com',
+        to: 'jamesnguyen88th@gmail.com',
+        subject: 'New message from visitor',
+        text: req.body.message
+      }
+      
+    };
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        return console.log(error);
+      }
+      res.render('thank', { title: 'Colab Code - pair coding makes simple.'});
+    })
   })
 
 module.exports = router;
